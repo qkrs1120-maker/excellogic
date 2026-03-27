@@ -59,7 +59,7 @@ body { display:flex;flex-direction:column; }
 #fbar-input { flex:1;border:none;outline:none;font-size:12px;padding:0 4px;font-family:inherit;color:#333; }
 
 /* GRID */
-#grid-wrap { flex:1;overflow:hidden;display:flex; }
+#grid-wrap { flex:1;overflow:hidden;display:flex;position:relative; }
 #grid-scroll { flex:1;overflow:auto; }
 #grid-scroll::-webkit-scrollbar { width:13px;height:13px; }
 #grid-scroll::-webkit-scrollbar-track { background:#f0f0f0; }
@@ -148,4 +148,60 @@ td.dc.pz.marked { background:#d0d0d0!important; }
 
 /* 네모로직 영역 */
 #nonogram-area{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+
+/* 시트 오버레이 */
+.sheet-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 40px;
+  background: #fff;
+  overflow-y: auto;
+  z-index: 10;
+  padding: 32px 48px;
+}
+.sheet-overlay.hidden { display: none; }
+.sheet-doc {
+  max-width: 800px;
+  font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;
+  font-size: 13px;
+  color: #222;
+  line-height: 1.7;
+}
+.sheet-doc h2 {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1f6b3e;
+  border-bottom: 2px solid #1f6b3e;
+  padding-bottom: 8px;
+  margin-bottom: 20px;
+}
+.sheet-doc h3 {
+  font-size: 13px;
+  font-weight: 700;
+  color: #333;
+  margin: 18px 0 8px;
+}
+.sheet-doc p { margin-bottom: 8px; }
+.sheet-doc ul, .sheet-doc ol { padding-left: 20px; margin-bottom: 12px; }
+.sheet-doc li { margin-bottom: 4px; }
+.guide-table {
+  border-collapse: collapse;
+  width: 100%;
+  max-width: 480px;
+  margin: 8px 0 16px;
+  font-size: 12px;
+}
+.guide-table th, .guide-table td {
+  border: 1px solid #d0d0d0;
+  padding: 5px 10px;
+  text-align: left;
+}
+.guide-table th { background: #f2f2f2; font-weight: 600; }
+.sheet-ad {
+  margin-top: 24px;
+  border: 1px solid #dde3ea;
+  border-radius: 2px;
+  padding: 8px 10px;
+  background: #f8fafc;
+  max-width: 800px;
+}
 
