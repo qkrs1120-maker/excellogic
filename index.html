@@ -23,6 +23,10 @@
   </div>
   <div id="tb-center"><span id="page-title">업무 데이터 검토</span></div>
   <div id="tb-right">
+    <!-- 게임 탭 전환 버튼 -->
+    <button id="tab-nonogram" class="game-tab-btn active" onclick="switchGame('nonogram')">네모로직</button>
+    <button id="tab-sudoku" class="game-tab-btn" onclick="switchGame('sudoku')">스도쿠</button>
+    <button class="rbtn" style="margin:0 6px;font-size:10px;" onclick="document.getElementById('modal-policy').style.display='flex'">❓ 도움말</button>
     <button class="wb">&#8722;</button>
     <button class="wb">&#9633;</button>
     <button class="wb wb-close">&#10005;</button>
@@ -94,13 +98,41 @@
   <input id="fbar-input" readonly placeholder="셀을 선택하세요">
 </div>
 
-<!-- GRID -->
+<!-- GRID (네모로직 영역) -->
+<div id="nonogram-area">
 <div id="grid-wrap">
   <div id="grid-scroll">
     <table id="gtable" cellspacing="0" cellpadding="0">
       <thead id="gthead"></thead>
       <tbody id="gtbody"></tbody>
     </table>
+  </div>
+</div>
+<!-- D26 공유 버튼 -->
+<div id="share-wrap">
+  <button id="shareBtn" class="rbtn primary">🔗 공유하기</button>
+  <span id="shareInfo"></span>
+</div>
+</div>
+
+<!-- 스도쿠 영역 (독립) -->
+<div id="sudoku-area" style="display:none;flex:1;overflow:auto;padding:20px;background:#fff;">
+  <div style="max-width:400px;margin:0 auto;">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+      <select id="sdk-level" style="height:24px;font-size:11px;border:1px solid #ccc;border-radius:2px;padding:0 4px;">
+        <option value="easy">초급</option>
+        <option value="hard">고급</option>
+      </select>
+      <button class="rbtn accent" onclick="loadSudoku()">새 문제</button>
+      <button class="rbtn primary" onclick="checkSudoku()">✔ 정답 확인</button>
+      <button class="rbtn" onclick="resetSudoku()">↺ 초기화</button>
+    </div>
+    <table id="sdk-table" cellspacing="0" cellpadding="0" style="border-collapse:collapse;"></table>
+    <div id="sdk-msg" style="margin-top:10px;font-size:12px;color:#1f6b3e;font-weight:600;"></div>
+    <!-- 광고 -->
+    <div class="ad-slot" style="margin-top:16px;">
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-2567294396988257" data-ad-slot="auto" data-ad-format="auto" data-full-width-responsive="true"></ins>
+    </div>
   </div>
 </div>
 
@@ -184,5 +216,151 @@
 
 <script src="puzzles.js"></script>
 <script src="script.js"></script>
-</body>
-</html>
+
+<!-- 하단 광고 -->
+<div class="ad-slot" style="margin:10px;min-height:100px;">
+  <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-2567294396988257" data-ad-slot="auto" data-ad-format="auto" data-full-width-responsive="true"></ins>
+  <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
+</div>
+
+<!-- 정책/도움말 모달 -->
+<div id="modal-policy" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:999;align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:4px;width:min(560px,95vw);max-height:80vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 4px 24px rgba(0,0,0,.25);">
+    <div style="background:#1f6b3e;color:#fff;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;font-weight:600;">
+      <span>📋 도움말 · 이용약관</span>
+      <button onclick="document.getElementById('modal-policy').style.display='none'" style="background:transparent;border:none;color:#fff;font-size:16px;cursor:pointer;">✕</button>
+    </div>
+    <div style="overflow-y:auto;padding:16px 20px;font-size:12px;line-height:1.8;color:#333;">
+      <h3 style="color:#1f6b3e;margin-bottom:6px;">🧩 네모로직 하는 법</h3>
+      <p><b>게임 규칙:</b> 행·열 힌트 숫자만큼 연속으로 칸을 채워 패턴을 완성하세요.</p>
+      <p><b>조작법:</b><br>
+        · 좌클릭 / 드래그 → 검정으로 채우기 (정답 칸)<br>
+        · 우클릭 / 드래그 → 회색으로 마크 (빈 칸 표시)<br>
+        · 검증 실행 버튼 → 정답 확인
+      </p>
+      <p><b>실행법:</b> 데이터 탭 → 분석 수준 선택 → 항목 불러오기 → 항목 클릭</p>
+      <hr style="margin:12px 0;border-color:#eee;">
+      <h3 style="color:#1f6b3e;margin-bottom:6px;">🔢 스도쿠 하는 법</h3>
+      <p><b>게임 규칙:</b> 9×9 칸에 1~9를 한 번씩만 사용하여 행·열·3×3 박스를 채우세요.</p>
+      <p><b>조작법:</b> 빈 칸 클릭 후 숫자(1~9) 키보드 입력</p>
+      <p><b>실행법:</b> 상단 스도쿠 탭 → 난이도 선택 → 새 문제</p>
+      <hr style="margin:12px 0;border-color:#eee;">
+      <h3 style="color:#1f6b3e;margin-bottom:6px;">📄 이용약관 · 개인정보처리방침</h3>
+      <p>본 서비스는 퍼즐 게임 제공을 목적으로 운영됩니다. 사용자의 개인정보는 수집하지 않으며, 풀이 기록은 브라우저 로컬스토리지에만 저장됩니다. 광고 서비스(Google AdSense)는 제3자 쿠키를 사용할 수 있습니다. 본 서비스 이용 시 본 약관에 동의하는 것으로 간주합니다.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── 게임 탭 전환 ──
+function switchGame(g) {
+  document.getElementById('nonogram-area').style.display = g==='nonogram'?'flex':'none';
+  document.getElementById('sudoku-area').style.display   = g==='sudoku'  ?'flex':'none';
+  document.getElementById('tab-nonogram').classList.toggle('active', g==='nonogram');
+  document.getElementById('tab-sudoku').classList.toggle('active',   g==='sudoku');
+  document.getElementById('fbar').style.display        = g==='nonogram'?'':'none';
+  document.getElementById('ribbon-body').style.display = g==='nonogram'?'':'none';
+  document.getElementById('ribbon-tab-bar').style.display = g==='nonogram'?'':'none';
+}
+
+// ── 공유하기 ──
+document.getElementById('shareBtn').onclick = async () => {
+  try { await navigator.share({title:'엑셀로직 퍼즐', url:location.href}); updateShareCount(); }
+  catch(e) { navigator.clipboard&&navigator.clipboard.writeText(location.href); updateShareCount(); }
+};
+function updateShareCount() {
+  let c = Number(localStorage.getItem('shareCount')||0)+1;
+  localStorage.setItem('shareCount', c);
+  document.getElementById('shareInfo').textContent = `공유 ${c}회`;
+}
+
+// ── 스도쿠 퍼즐 데이터 (난이도별 3개씩) ──
+const SDK = {
+  easy:[
+    // 0=빈칸
+    [[5,3,0,0,7,0,0,0,0],[6,0,0,1,9,5,0,0,0],[0,9,8,0,0,0,0,6,0],[8,0,0,0,6,0,0,0,3],[4,0,0,8,0,3,0,0,1],[7,0,0,0,2,0,0,0,6],[0,6,0,0,0,0,2,8,0],[0,0,0,4,1,9,0,0,5],[0,0,0,0,8,0,0,7,9]],
+    [[0,0,0,2,6,0,7,0,1],[6,8,0,0,7,0,0,9,0],[1,9,0,0,0,4,5,0,0],[8,2,0,1,0,0,0,4,0],[0,0,4,6,0,2,9,0,0],[0,5,0,0,0,3,0,2,8],[0,0,9,3,0,0,0,7,4],[0,4,0,0,5,0,0,3,6],[7,0,3,0,1,8,0,0,0]],
+    [[0,2,0,0,0,0,0,0,0],[0,0,0,6,0,0,0,0,3],[0,7,4,0,8,0,0,0,0],[0,0,0,0,0,3,0,0,2],[0,8,0,0,4,0,0,1,0],[6,0,0,5,0,0,0,0,0],[0,0,0,0,1,0,7,8,0],[5,0,0,0,0,9,0,0,0],[0,0,0,0,0,0,0,4,0]]
+  ],
+  hard:[
+    [[8,0,0,0,0,0,0,0,0],[0,0,3,6,0,0,0,0,0],[0,7,0,0,9,0,2,0,0],[0,5,0,0,0,7,0,0,0],[0,0,0,0,4,5,7,0,0],[0,0,0,1,0,0,0,3,0],[0,0,1,0,0,0,0,6,8],[0,0,8,5,0,0,0,1,0],[0,9,0,0,0,0,4,0,0]],
+    [[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,3,0,8,5],[0,0,1,0,2,0,0,0,0],[0,0,0,5,0,7,0,0,0],[0,0,4,0,0,0,1,0,0],[0,9,0,0,0,0,0,0,0],[5,0,0,0,0,0,0,7,3],[0,0,2,0,1,0,0,0,0],[0,0,0,0,4,0,0,0,9]],
+    [[0,0,5,3,0,0,0,0,0],[8,0,0,0,0,0,0,2,0],[0,7,0,0,1,0,5,0,0],[4,0,0,0,0,5,3,0,0],[0,1,0,0,7,0,0,0,6],[0,0,3,2,0,0,0,8,0],[0,6,0,5,0,0,0,0,9],[0,0,4,0,0,0,0,3,0],[0,0,0,0,0,9,7,0,0]]
+  ]
+};
+const SDK_ANS = {
+  easy:[
+    [[5,3,4,6,7,8,9,1,2],[6,7,2,1,9,5,3,4,8],[1,9,8,3,4,2,5,6,7],[8,5,9,7,6,1,4,2,3],[4,2,6,8,5,3,7,9,1],[7,1,3,9,2,4,8,5,6],[9,6,1,5,3,7,2,8,4],[2,8,7,4,1,9,6,3,5],[3,4,5,2,8,6,1,7,9]],
+    [[4,3,5,2,6,9,7,8,1],[6,8,2,5,7,1,4,9,3],[1,9,7,8,3,4,5,6,2],[8,2,6,1,9,5,3,4,7],[3,7,4,6,8,2,9,1,5],[9,5,1,7,4,3,6,2,8],[5,1,9,3,2,6,8,7,4],[2,4,8,9,5,7,1,3,6],[7,6,3,4,1,8,2,5,9]],
+    [[6,2,3,4,5,1,8,9,7],[1,5,8,6,2,7,4,9,3],[9,7,4,3,8,6,1,5,2],[3,9,1,7,6,3,4,5,2],[2,8,7,9,4,5,6,1,3],[6,4,5,5,3,2,9,7,1],[4,3,2,1,1,4,7,8,6],[5,1,6,8,7,9,2,3,4],[7,6,9,2,9,8,3,4,5]]
+  ],
+  hard:[
+    [[8,1,2,7,5,3,6,4,9],[9,4,3,6,8,2,1,7,5],[6,7,5,4,9,1,2,8,3],[1,5,4,2,3,7,8,9,6],[3,6,9,8,4,5,7,2,1],[2,8,7,1,6,9,5,3,4],[5,2,1,9,7,4,3,6,8],[4,3,8,5,2,6,9,1,7],[7,9,6,3,1,8,4,5,2]],
+    [[9,8,7,6,5,4,3,2,1],[2,4,6,1,7,3,9,8,5],[3,5,1,9,2,8,7,4,6],[1,2,8,5,3,7,6,9,4],[6,3,4,8,9,2,1,5,7],[7,9,5,4,6,1,8,3,2],[5,1,9,2,8,6,4,7,3],[4,7,2,3,1,5,8,6,9],[8,6,3,7,4,9,2,1,5]],
+    [[1,4,5,3,2,7,9,6,8],[8,3,9,6,5,4,1,2,7],[6,7,2,9,1,8,5,4,3],[4,9,6,1,8,5,3,7,2],[2,1,8,4,7,3,6,5,9],[7,5,3,2,9,6,4,8,1],[3,6,7,5,4,2,8,1,9],[9,2,4,8,6,1,7,3,5],[5,8,1,7,3,9,2,9,4]]
+  ]
+};
+
+let sdkCurrent=null, sdkAnswer=null, sdkSel=null;
+
+function loadSudoku() {
+  const lv = document.getElementById('sdk-level').value;
+  const arr = SDK[lv], idx = Math.floor(Math.random()*arr.length);
+  sdkCurrent = arr[idx].map(r=>[...r]);
+  sdkAnswer  = SDK_ANS[lv][idx];
+  sdkSel = null;
+  document.getElementById('sdk-msg').textContent='';
+  renderSudoku();
+  try{(window.adsbygoogle=window.adsbygoogle||[]).push({});}catch(e){}
+}
+
+function renderSudoku() {
+  const t = document.getElementById('sdk-table');
+  t.innerHTML='';
+  for(let r=0;r<9;r++){
+    const tr=document.createElement('tr');
+    for(let c=0;c<9;c++){
+      const td=document.createElement('td');
+      const orig=sdkCurrent[r][c];
+      const bT=r%3===0?'2px':'1px', bL=c%3===0?'2px':'1px';
+      td.style.cssText=`width:38px;height:38px;text-align:center;vertical-align:middle;font-size:16px;
+        border-top:${bT} solid #555;border-left:${bL} solid #555;
+        border-bottom:${r===8?'2px':'1px'} solid #555;border-right:${c===8?'2px':'1px'} solid #555;
+        cursor:${orig?'default':'pointer'};background:${orig?'#f5f5f5':'#fff'};
+        color:${orig?'#222':'#1565c0'};font-weight:${orig?'600':'400'};`;
+      td.dataset.r=r; td.dataset.c=c;
+      td.textContent=sdkCurrent[r][c]||'';
+      if(!orig) td.addEventListener('click',()=>{ sdkSel={r,c}; renderSudoku(); td.style.background='#e8f0fe'; });
+      tr.appendChild(td);
+    }
+    t.appendChild(tr);
+  }
+}
+
+document.addEventListener('keydown', e=>{
+  if(!sdkSel||document.getElementById('sudoku-area').style.display==='none') return;
+  const n=parseInt(e.key);
+  if(n>=1&&n<=9){ sdkCurrent[sdkSel.r][sdkSel.c]=n; renderSudoku(); }
+  if(e.key==='Backspace'||e.key==='Delete'){ sdkCurrent[sdkSel.r][sdkSel.c]=0; renderSudoku(); }
+});
+
+function checkSudoku() {
+  const msg=document.getElementById('sdk-msg');
+  for(let r=0;r<9;r++) for(let c=0;c<9;c++){
+    const row=sdkCurrent[r], col=sdkCurrent.map(x=>x[c]);
+    if(new Set(row.filter(Boolean)).size!==row.filter(Boolean).length||
+       new Set(col.filter(Boolean)).size!==col.filter(Boolean).length){
+      msg.style.color='#c62828'; msg.textContent='⚠ 중복된 숫자가 있습니다. 다시 확인하세요.'; return;
+    }
+  }
+  if(sdkCurrent.every(r=>r.every(v=>v!==0))){
+    msg.style.color='#1f6b3e'; msg.textContent='✔ 정답입니다! 축하합니다!';
+  } else { msg.style.color='#555'; msg.textContent='진행 중입니다. 계속 채워주세요.'; }
+}
+
+function resetSudoku() { loadSudoku(); }
+
+// 초기 스도쿠 로드
+loadSudoku();
+</script>
+
